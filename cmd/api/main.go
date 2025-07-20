@@ -12,5 +12,7 @@ func init() {
 func main() {
 
 	//api.InitApi()
-	worker.Test()
+	worker.TestTwitch("esacarry")
+	worker.TestKick("esa")
+	worker.TestYt("esacarry")
 }

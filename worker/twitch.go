@@ -1,16 +1,12 @@
 package worker
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"stream-radar/internal/http"
+	"stream-radar/worker/types"
 )
-
-type TokenResponse struct {
-	AccessToken string `json:"access_token"`
-	ExpiresIn   int    `json:"expires_in"`
-	TokenType   string `json:"token_type"`
-}
 
 type SearchChannelResposne struct {
 	Data       []interface{} `json:"data"`
@@ -20,14 +16,14 @@ type SearchChannelResposne struct {
 }
 
 var (
-	clientId     string
-	clientSecret string
+	twClientId     string
+	twClientSecret string
 )
 
-func getToken() (TokenResponse, error) {
-	clientId = os.Getenv("TW_CLIENT_ID")
-	clientSecret = os.Getenv("TW_CLIENT_SECRET")
-	resp, err := http.Post[TokenResponse](http.PostOptions{
+func getTwToken() (types.TokenResponse, error) {
+	twClientId = os.Getenv("TW_CLIENT_ID")
+	twClientSecret = os.Getenv("TW_CLIENT_SECRET")
+	resp, err := http.Post[types.TokenResponse](http.PostOptions{
 		BaseOptions: http.BaseOptions{
 			Url: fmt.Sprint("https://id.twitch.tv/oauth2/token?"),
 			Headers: map[string]string{
@@ -36,8 +32,8 @@ func getToken() (TokenResponse, error) {
 		},
 		QueryParams: nil,
 		Body: map[string]string{
-			"client_id":     clientId,
-			"client_secret": clientSecret,
+			"client_id":     twClientId,
+			"client_secret": twClientSecret,
 			"grant_type":    "client_credentials",
 		},
 	})
@@ -46,14 +42,14 @@ func getToken() (TokenResponse, error) {
 }
 
 func searchChannel(channelName string, token string) (SearchChannelResposne, error) {
-	clientId = os.Getenv("TW_CLIENT_ID")
-	clientSecret = os.Getenv("TW_CLIENT_SECRET")
+	twClientId = os.Getenv("TW_CLIENT_ID")
+	twClientSecret = os.Getenv("TW_CLIENT_SECRET")
 	resp, err := http.Get[SearchChannelResposne](http.GetOptions{
 		BaseOptions: http.BaseOptions{
 			Url: fmt.Sprint("https://api.twitch.tv/helix/search/channels"),
 			Headers: map[string]string{
 				"Authorization": fmt.Sprintf("Bearer %s", token),
-				"Client-Id":     clientId,
+				"Client-Id":     twClientId,
 			},
 		},
 		QueryParams: map[string]string{
@@ -63,15 +59,15 @@ func searchChannel(channelName string, token string) (SearchChannelResposne, err
 	return resp, err
 }
 
-func Test() {
-	resp, err1 := getToken()
+func TestTwitch(channelName string) {
+	resp, err1 := getTwToken()
 
 	if err1 != nil {
 		return
 	}
-	fmt.Println(resp.AccessToken)
-	respChannel, err := searchChannel("minerva", resp.AccessToken)
+	respChannel, _ := searchChannel(channelName, resp.AccessToken)
 
-	fmt.Println(respChannel)
-	fmt.Println(err)
+	json.NewEncoder(os.Stdout).Encode(respChannel)
+	//fmt.Printf("%v", respChannel)
+	//fmt.Println(err)
 }
