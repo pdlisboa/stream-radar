@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"os"
 	"stream-radar/internal/config"
+	"stream-radar/internal/utils"
 	"sync"
 )
 
@@ -20,10 +21,9 @@ var LogLevel = map[string]zapcore.Level{
 
 func GetInstance() *zap.Logger {
 	once.Do(func() {
-		println("Initialize logger")
 		logger = initializeLogger(config.LoggerConfig{
-			Env:   "development",
-			Level: "INFO",
+			Env:   utils.GetEnv("ENV", "development"),
+			Level: utils.GetEnv("LOG_LEVEL", "INFO"),
 		})
 	})
 	return logger
