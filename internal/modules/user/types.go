@@ -16,4 +16,5 @@ type FindUserRequest struct {
 type IUserService interface {
 	Create(req CreateUserRequest) (model.User, error)
 	Find(req FindUserRequest) (model.User, error)
+	Get(id uint) (model.User, error)
 }

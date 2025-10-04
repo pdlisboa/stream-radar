@@ -66,6 +66,66 @@ const docTemplate = `{
                 }
             }
         },
+        "/streamer": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "streamers"
+                ],
+                "summary": "Register Streamers",
+                "parameters": [
+                    {
+                        "description": "payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/streamer.RegisterStreamersRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.StreamerDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "produces": [
@@ -88,16 +148,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "name": "email",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "description": "Bearer",
                         "name": "Authorization",
                         "in": "header",
@@ -108,7 +158,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/dto.UserDTO"
                         }
                     },
                     "400": {
@@ -157,7 +207,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/dto.UserDTO"
                         }
                     },
                     "400": {
@@ -196,7 +246,21 @@ const docTemplate = `{
                 }
             }
         },
-        "model.User": {
+        "dto.StreamerDTO": {
+            "type": "object",
+            "properties": {
+                "aliases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -211,13 +275,13 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "password_hash": {
-                    "type": "string"
-                },
                 "updated_at": {
                     "type": "string"
                 }
             }
+        },
+        "streamer.RegisterStreamersRequest": {
+            "type": "object"
         },
         "user.CreateUserRequest": {
             "type": "object",

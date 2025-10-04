@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"stream-radar/api/middleware"
 	"stream-radar/internal/modules/auth"
+	"stream-radar/internal/modules/streamer"
 	"stream-radar/internal/modules/user"
 )
 
@@ -18,6 +19,10 @@ func ApplyRouter(app *fiber.App) {
 	//User
 	userGroup := app.Group("/user")
 	userGroup.Post("/", user.CreateUser)
-	userGroup.Get("/", middleware.JWTProtected, user.CreateUser)
+	userGroup.Get("/", middleware.JWTProtected, user.GetUser)
+
+	//Streamer
+	streamerGroup := app.Group("/streamer")
+	streamerGroup.Post("/", middleware.JWTProtected, streamer.RegisterStreamers)
 
 }

@@ -7,7 +7,16 @@ definitions:
       password:
         type: string
     type: object
-  model.User:
+  dto.StreamerDTO:
+    properties:
+      aliases:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+    type: object
+  dto.UserDTO:
     properties:
       created_at:
         type: string
@@ -17,10 +26,10 @@ definitions:
         type: integer
       name:
         type: string
-      password_hash:
-        type: string
       updated_at:
         type: string
+    type: object
+  streamer.RegisterStreamersRequest:
     type: object
   user.CreateUserRequest:
     properties:
@@ -72,15 +81,50 @@ paths:
       summary: Login
       tags:
       - auth
+  /streamer:
+    post:
+      parameters:
+      - description: payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/streamer.RegisterStreamersRequest'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/dto.StreamerDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "401":
+          description: Unauthorized
+          schema: {}
+        "403":
+          description: Forbidden
+          schema: {}
+        "422":
+          description: Unprocessable Entity
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Register Streamers
+      tags:
+      - streamers
   /user:
     get:
       parameters:
-      - in: query
-        name: email
-        type: string
-      - in: query
-        name: name
-        type: string
       - in: query
         name: email
         type: string
@@ -98,7 +142,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/dto.UserDTO'
         "400":
           description: Bad Request
           schema: {}
@@ -132,7 +176,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/dto.UserDTO'
         "400":
           description: Bad Request
           schema: {}

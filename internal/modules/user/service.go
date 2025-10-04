@@ -48,9 +48,23 @@ func (svc UserService) Find(req FindUserRequest) (model.User, error) {
 
 	if res.Error != nil {
 		log.Debug("User not found", zap.String("email", req.Email))
-		return model.User{}, errors.New("useR not found")
+		return model.User{}, errors.New("user not found")
 	}
 
 	return user, nil
 
+}
+
+func (svc UserService) Get(id uint) (model.User, error) {
+	log := logger.GetInstance()
+
+	var user model.User
+	res := database.DB.Where("id = ?", id).First(&user)
+
+	if res.Error != nil {
+		log.Debug("User not found", zap.Uint("id", id))
+		return model.User{}, errors.New("user not found")
+	}
+
+	return user, nil
 }

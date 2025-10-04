@@ -26,7 +26,7 @@ func Connect(dbConfig config.DbConfig) {
 	log.Debug("Connection Opened to Database")
 
 	// Migrate the schemas
-	err = db.AutoMigrate(&model.User{})
+	err = db.AutoMigrate(&model.User{}, &model.Streamer{})
 	if err != nil {
 		panic("error migrating database")
 	}

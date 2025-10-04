@@ -9,7 +9,7 @@ import "github.com/gofiber/fiber/v2"
 // @Produce json
 // @Router /user [POST]
 // @Param body body CreateUserRequest true "body"
-// @success 201 {object} model.User
+// @success 201 {object} dto.UserDTO
 // @Failure 400  {object} any
 // @Failure 401 {object} any
 // @Failure 403 {object} any
@@ -31,7 +31,7 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(user)
+	return c.Status(fiber.StatusCreated).JSON(user.ToDTO())
 }
 
 // GetUser
@@ -40,10 +40,9 @@ func CreateUser(c *fiber.Ctx) error {
 // @Tags user
 // @Produce json
 // @Router /user [GET]
-// @Param name query FindUserRequest false "name"
-// @Param email query FindUserRequest false "email"
+// @Param name query FindUserRequest false "query"
 // @Param Authorization header string true "Bearer"
-// @success 201 {object} model.User
+// @success 201 {object} dto.UserDTO
 // @Failure 400  {object} any
 // @Failure 401 {object} any
 // @Failure 403 {object} any
@@ -65,5 +64,5 @@ func GetUser(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(user)
+	return c.Status(fiber.StatusOK).JSON(user.ToDTO())
 }
